@@ -1,0 +1,181 @@
+/* ─────────────────────────────────────────────
+   RIMSS Global Styles
+   Angular Material custom theme + design tokens
+───────────────────────────────────────────── */
+
+@use '@angular/material' as mat;
+
+/* Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+/* ── Design Tokens ── */
+:root {
+  --color-primary:        #1a1a2e;
+  --color-primary-light:  #16213e;
+  --color-accent:         #c9a96e;
+  --color-accent-dark:    #a0824e;
+  --color-surface:        #ffffff;
+  --color-bg:             #f8f6f2;
+  --color-text:           #1a1a1a;
+  --color-text-muted:     #6b6b6b;
+  --color-border:         #e8e4de;
+  --color-error:          #c0392b;
+  --color-success:        #27ae60;
+
+  --font-display:  'Cormorant Garamond', Georgia, serif;
+  --font-body:     'Inter', system-ui, sans-serif;
+
+  --radius-sm:  4px;
+  --radius-md:  8px;
+  --radius-lg:  16px;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.08);
+  --shadow-md: 0 4px 16px rgba(0,0,0,.10);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,.14);
+
+  --transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+img { display: block; max-width: 100%; }
+
+/* ── Layout Utilities ── */
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.section { padding: 64px 0; }
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  color: var(--color-primary);
+  margin-bottom: 8px;
+}
+.section-subtitle {
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  margin-bottom: 40px;
+}
+.divider {
+  width: 60px;
+  height: 2px;
+  background: var(--color-accent);
+  margin: 12px 0 32px;
+}
+
+/* ── Buttons ── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background var(--transition), transform var(--transition);
+  &:hover { background: var(--color-primary-light); transform: translateY(-1px); }
+}
+
+.btn-accent {
+  @extend .btn-primary;
+  background: var(--color-accent);
+  color: var(--color-primary);
+  &:hover { background: var(--color-accent-dark); }
+}
+
+.btn-outline {
+  @extend .btn-primary;
+  background: transparent;
+  color: var(--color-primary);
+  border: 1.5px solid var(--color-primary);
+  &:hover { background: var(--color-primary); color: #fff; }
+}
+
+/* ── Cards ── */
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: box-shadow var(--transition), transform var(--transition);
+  &:hover { box-shadow: var(--shadow-md); transform: translateY(-4px); }
+}
+
+/* ── Badges ── */
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.badge-discount {
+  background: rgba(201, 169, 110, 0.18);
+  color: var(--color-accent-dark);
+}
+.badge-new {
+  background: rgba(26, 26, 46, 0.1);
+  color: var(--color-primary);
+}
+
+/* ── Forms ── */
+.form-field { margin-bottom: 20px; }
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  @media (max-width: 600px) { grid-template-columns: 1fr; }
+}
+
+/* ── Loading Spinner ── */
+.loading-overlay {
+  display: flex; justify-content: center; align-items: center;
+  min-height: 200px;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 4px; }
+
+/* ── Angular Material Overrides ── */
+.mat-mdc-card { border-radius: var(--radius-md) !important; }
+.mat-mdc-button { letter-spacing: 0.06em !important; }
+.mdc-text-field { font-family: var(--font-body) !important; }

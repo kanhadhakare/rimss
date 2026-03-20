@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -22,7 +22,7 @@ import { ProductFilter } from '../../core/services/product.service';
 @Component({
   selector: 'app-catalog',
   standalone: true,
-  imports: [AsyncPipe, FormsModule, RouterLink, MatButtonModule, MatIconModule,
+  imports: [AsyncPipe, FormsModule, MatButtonModule, MatIconModule,
     MatInputModule, MatFormFieldModule, MatSelectModule, MatSliderModule, MatCheckboxModule, MatChipsModule,
     ProductCardComponent],
   template: `

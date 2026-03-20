@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { AsyncPipe, CurrencyPipe } from '@angular/common';
 import { Store } from '@ngrx/store';
@@ -20,7 +20,7 @@ import { OrderService } from '../../core/services/order.service';
 @Component({
   selector: 'app-checkout',
   standalone: true,
-  imports: [ReactiveFormsModule, AsyncPipe, CurrencyPipe, RouterLink,
+  imports: [ReactiveFormsModule, AsyncPipe, CurrencyPipe,
     MatButtonModule, MatIconModule, MatInputModule, MatFormFieldModule,
     MatStepperModule, MatDividerModule, MatSnackBarModule],
   template: `
@@ -41,7 +41,7 @@ import { OrderService } from '../../core/services/order.service';
                   </mat-form-field>
                   <mat-form-field appearance="outline">
                     <mat-label>Postal Code</mat-label>
-                    <input matInput formControlName="postalCode" placeholder="SW1A 1AA" />
+                    <input matInput formControlName="postalCode" placeholder="110001" />
                   </mat-form-field>
                 </div>
                 <mat-form-field appearance="outline" class="w-full">
@@ -55,7 +55,7 @@ import { OrderService } from '../../core/services/order.service';
                   </mat-form-field>
                   <mat-form-field appearance="outline">
                     <mat-label>Country</mat-label>
-                    <input matInput formControlName="country" placeholder="United Kingdom" />
+                    <input matInput formControlName="country" placeholder="India" />
                   </mat-form-field>
                 </div>
                 <button matStepperNext class="btn-primary" [disabled]="shippingForm.invalid">Continue to Payment</button>
@@ -146,7 +146,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     address: ['', Validators.required],
     city: ['', Validators.required],
     postalCode: ['', Validators.required],
-    country: ['United Kingdom', Validators.required],
+    country: ['India', Validators.required],
   });
 
   constructor(private orderService: OrderService, private router: Router,

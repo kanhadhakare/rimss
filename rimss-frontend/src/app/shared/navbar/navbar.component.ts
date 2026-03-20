@@ -44,6 +44,9 @@ import { logout } from '../../store/auth/auth.actions';
               <div class="menu-user-name" mat-menu-item disabled>
                 {{ (user$ | async)?.name }}
               </div>
+              <a mat-menu-item routerLink="/profile">
+                <mat-icon>person</mat-icon> My Profile
+              </a>
               <button mat-menu-item (click)="onLogout()">
                 <mat-icon>logout</mat-icon> Sign Out
               </button>

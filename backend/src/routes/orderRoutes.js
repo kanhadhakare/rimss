@@ -67,4 +67,28 @@ router.get('/', protect, adminOnly, async (req, res) => {
     }
 });
 
+// PUT /api/orders/:id/status — update order status (admin)
+router.put('/:id/status', protect, adminOnly, async (req, res) => {
+    try {
+        const { status } = req.body;
+        const validStatuses = ['pending', 'paid', 'processing', 'shipped', 'delivered', 'cancelled'];
+        if (!validStatuses.includes(status)) {
+            return res.status(400).json({ message: `Invalid status. Must be one of: ${validStatuses.join(', ')}` });
+        }
+
+        const order = await Order.findById(req.params.id);
+        if (!order) return res.status(404).json({ message: 'Order not found' });
+
+        order.status = status;
+        if (status === 'paid' && !order.paidAt) order.paidAt = new Date();
+        await order.save();
+
+        logger.info(`Order ${order._id} status updated to ${status}`);
+        res.json(order);
+    } catch (err) {
+        logger.error(`Update order status error: ${err.message}`);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 module.exports = router;

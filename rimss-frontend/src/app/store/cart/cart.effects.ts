@@ -1,13 +1,17 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { of } from 'rxjs';
-import { switchMap, map, catchError } from 'rxjs/operators';
+import { of, forkJoin } from 'rxjs';
+import { switchMap, map, catchError, withLatestFrom, concatMap } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
 import * as CartActions from './cart.actions';
+import * as AuthActions from '../auth/auth.actions';
 import { CartService } from '../../core/services/cart.service';
+import { selectLocalCartItems } from './cart.selectors';
 
 @Injectable()
 export class CartEffects {
     private actions$ = inject(Actions);
+    private store = inject(Store);
     private cartService = inject(CartService);
 
     private mapCart = (cart: any) => ({ items: cart.items || [], total: cart.total || 0 });
@@ -48,5 +52,25 @@ export class CartEffects {
                 catchError(err => of(CartActions.loadCartFailure({ error: err.message })))
             )
         )
+    ));
+
+    syncLocalCart$ = createEffect(() => this.actions$.pipe(
+        ofType(AuthActions.loginSuccess, AuthActions.registerSuccess),
+        withLatestFrom(this.store.select(selectLocalCartItems)),
+        concatMap(([_, localItems]) => {
+            if (!localItems || localItems.length === 0) {
+                return of(CartActions.loadCart());
+            }
+            const syncReqs = localItems.map(item =>
+                this.cartService.addItem(item.product._id, item.quantity, item.size, item.color)
+            );
+            return forkJoin(syncReqs).pipe(
+                map(() => {
+                    this.store.dispatch(CartActions.clearLocalCart());
+                    return CartActions.loadCart();
+                }),
+                catchError(() => of(CartActions.loadCart()))
+            );
+        })
     ));
 }

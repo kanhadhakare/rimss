@@ -114,7 +114,16 @@ import { removeCartItem, updateCartItem, removeFromLocalCart, updateLocalCartIte
     .empty-cart mat-icon { font-size: 4rem; color: var(--color-border); display: block; margin: 0 auto 16px; }
     .empty-cart h2 { font-family: var(--font-display); color: var(--color-primary); }
     .empty-cart p { color: var(--color-text-muted); margin: 8px 0 24px; }
-    @media (max-width: 768px) { .cart-layout { grid-template-columns: 1fr; } }
+    @media (max-width: 768px) {
+      .cart-layout { grid-template-columns: 1fr; gap: 24px; }
+      .cart-row { flex-wrap: wrap; gap: 12px; padding: 16px 0; }
+      .cart-img { width: 64px; height: 80px; }
+      .cart-info { flex: 1; min-width: calc(100% - 80px); }
+      .cart-name { font-size: 0.9rem; }
+      .qty-control { margin-left: auto; }
+      .cart-subtotal { min-width: auto; text-align: right; }
+      .cart-summary { position: static; padding: 20px; }
+    }
   `]
 })
 export class CartComponent implements OnInit {

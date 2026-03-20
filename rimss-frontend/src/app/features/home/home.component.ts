@@ -20,7 +20,7 @@ import { selectAllProducts, selectProductLoading } from '../../store/product/pro
       <div class="hero-content container">
         <span class="hero-label">New Season 2024</span>
         <h1 class="hero-title">Timeless Luxury.<br>Modern Heritage.</h1>
-        <p class="hero-sub">Discover the finest British countryside fashion — reimagined for the contemporary wardrobe.</p>
+        <p class="hero-sub">Discover the finest Indian ethical fashion — reimagined for the contemporary wardrobe.</p>
         <div class="hero-actions">
           <a routerLink="/products" class="btn-accent">Shop Collection</a>
           <a routerLink="/products?featured=true" class="btn-outline">View Lookbook</a>
@@ -147,8 +147,8 @@ export class HomeComponent implements OnInit {
   ];
 
   values = [
-    { icon: 'local_shipping', title: 'Free UK Shipping', desc: 'Complimentary delivery on all orders over £150 across the United Kingdom.' },
-    { icon: 'workspace_premium', title: 'Premium Craftsmanship', desc: 'Every garment is crafted with the finest British materials and expert tailoring.' },
+    { icon: 'local_shipping', title: 'Free Pan-India Shipping', desc: 'Complimentary delivery on all orders over ₹2000 across India.' },
+    { icon: 'workspace_premium', title: 'Premium Craftsmanship', desc: 'Every garment is crafted with the finest Indian materials and expert tailoring.' },
     { icon: 'loop', title: 'Easy Returns', desc: 'Not satisfied? Return any item within 30 days, no questions asked.' },
     { icon: 'support_agent', title: 'Concierge Service', desc: 'Our dedicated style advisors are available 7 days a week to assist you.' },
   ];
@@ -156,8 +156,8 @@ export class HomeComponent implements OnInit {
   constructor(private title: Title, private meta: Meta) { }
 
   ngOnInit() {
-    this.title.setTitle('YCompany — Luxury British Fashion');
-    this.meta.updateTag({ name: 'description', content: 'YCompany — Discover timeless luxury British fashion. Sweaters, shirts, shoes, jackets and accessories for men, women and children.' });
+    this.title.setTitle('YCompany — Luxury Indian Fashion');
+    this.meta.updateTag({ name: 'description', content: 'YCompany — Discover timeless luxury Indian fashion. Sweaters, shirts, shoes, jackets and accessories for men, women and children.' });
     this.store.dispatch(loadProducts({ filters: { featured: true, limit: 8 } }));
   }
 }

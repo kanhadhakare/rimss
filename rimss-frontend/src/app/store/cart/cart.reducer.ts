@@ -37,7 +37,7 @@ export const cartReducer = createReducer(
     on(CartActions.loadCartSuccess, CartActions.addToCartSuccess,
         CartActions.updateCartItemSuccess, CartActions.removeCartItemSuccess,
         (state, { items, total }) => ({ ...state, loading: false, items, total })),
-    on(CartActions.clearCartSuccess, state => ({ ...state, items: [], total: 0 })),
+    on(CartActions.clearCart, CartActions.clearCartSuccess, state => ({ ...state, items: [], total: 0 })),
     // Local cart mutations
     on(CartActions.addToLocalCart, (state, { product, quantity, size, color }) => {
         const existing = state.localItems.find(i => i.product._id === product._id && i.size === size && i.color === color);
@@ -63,5 +63,9 @@ export const cartReducer = createReducer(
             : state.localItems.map(i => i.id === itemId ? { ...i, quantity } : i);
         saveLocalCart(localItems);
         return { ...state, localItems };
+    }),
+    on(CartActions.clearLocalCart, state => {
+        saveLocalCart([]);
+        return { ...state, localItems: [] };
     }),
 );

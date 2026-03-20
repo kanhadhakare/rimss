@@ -2,6 +2,7 @@ require('dotenv').config();
 const connectDB = require('./config/db');
 const Product = require('./models/Product');
 const User = require('./models/User');
+const Lookbook = require('./models/Lookbook');
 const bcrypt = require('bcryptjs');
 const logger = require('./config/logger');
 
@@ -9,7 +10,7 @@ const products = [
     // ── Sweaters ──────────────────────────────────────────────────────────
     {
         name: 'Heritage Cable-Knit Sweater',
-        description: 'A timeless cable-knit sweater crafted from the finest Scottish wool, offering warmth and elegance.',
+        description: 'A timeless cable-knit sweater crafted from the finest Kashmiri wool, offering warmth and elegance.',
         category: 'sweaters', gender: 'men',
         price: 2800, discountPct: 0,
         colors: ['Cream', 'Navy', 'Forest Green'],
@@ -28,8 +29,8 @@ const products = [
         stock: 60, featured: true, rating: 4.6, reviewCount: 89,
     },
     {
-        name: 'Chunky Fair Isle Sweater',
-        description: 'Authentic Fair Isle pattern in British lambswool, hand-finished for a bespoke feel.',
+        name: 'Chunky Himalayan Sweater',
+        description: 'Authentic traditional pattern in fine Indian wool, hand-finished for a bespoke feel.',
         category: 'sweaters', gender: 'unisex',
         price: 3200, discountPct: 10,
         colors: ['Oatmeal', 'Burgundy'],
@@ -71,7 +72,7 @@ const products = [
     // ── Shoes ─────────────────────────────────────────────────────────────
     {
         name: 'Country Brogue Oxford',
-        description: 'Full grain leather brogues with hand-stitched details — the hallmark of British craftsmanship.',
+        description: 'Full grain leather brogues with hand-stitched details — the hallmark of Indian craftsmanship.',
         category: 'shoes', gender: 'men',
         price: 3950, discountPct: 0,
         colors: ['Tan', 'Dark Brown', 'Black'],
@@ -91,8 +92,8 @@ const products = [
     },
     // ── Accessories ───────────────────────────────────────────────────────
     {
-        name: 'Lambswool Tartan Scarf',
-        description: 'Pure lambswool scarf in heritage tartan — woven in the Scottish Borders.',
+        name: 'Kashmiri Handloom Scarf',
+        description: 'Pure lambswool scarf in heritage handloom — woven in the Kashmir Valley.',
         category: 'accessories', gender: 'unisex',
         price: 950, discountPct: 0,
         colors: ['Royal Stewart', 'Black Watch', 'Dress Gordon'],
@@ -123,7 +124,7 @@ const products = [
     },
     {
         name: 'Tweed Blazer',
-        description: 'Heritage tweed blazer in a herringbone weave from a Yorkshire mill — structured fit.',
+        description: 'Heritage tweed blazer in a herringbone weave from a Varanasi mill — structured fit.',
         category: 'jackets', gender: 'women',
         price: 4800, discountPct: 0,
         colors: ['Grey Herringbone', 'Brown Herringbone'],
@@ -151,12 +152,57 @@ const users = [
     }
 ];
 
+// Lookbook definitions — product names matched after insert
+const lookbookDefs = [
+    {
+        title: 'The Country Gentleman',
+        subtitle: 'Effortless elegance for the modern countryman',
+        description: 'A carefully curated ensemble blending heritage tweed, crisp checks, and robust leather accessories. Perfect for autumn walks across the estate or a refined weekend gathering.',
+        coverImage: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=1200',
+        season: 'Autumn/Winter 2024',
+        tags: ['formal', 'autumn', 'heritage'],
+        featured: true,
+        productNames: ['Tweed Blazer', 'Classic Tattersall Shirt', 'Country Brogue Oxford', 'Leather Belt with Brass Buckle'],
+    },
+    {
+        title: 'Weekend Retreat',
+        subtitle: 'Relaxed layers for countryside escapes',
+        description: 'Soft knits, corduroy, and rich earthy tones — this look captures the spirit of unhurried weekends spent between village pubs and rolling hills.',
+        coverImage: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1200',
+        season: 'Autumn/Winter 2024',
+        tags: ['casual', 'layering', 'knitwear'],
+        featured: true,
+        productNames: ['Heritage Cable-Knit Sweater', 'Corduroy Casual Shirt', 'Kashmiri Handloom Scarf', 'Chelsea Boot'],
+    },
+    {
+        title: 'City to Country',
+        subtitle: 'Versatile pieces that transition seamlessly',
+        description: 'From the morning commute to an evening in the countryside — a wardrobe that moves with you. Clean lines meet heritage fabrics in this cross-context collection.',
+        coverImage: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=1200',
+        season: 'Spring/Summer 2025',
+        tags: ['versatile', 'transitional', 'smart-casual'],
+        featured: false,
+        productNames: ['Moleskin Field Jacket', 'Oxford Button-Down Shirt', 'Merino V-Neck Pullover', 'Country Brogue Oxford'],
+    },
+    {
+        title: 'Himalayan Heritage',
+        subtitle: 'Celebrating Indian craft and tradition',
+        description: 'An ode to the Himalayas — fine patterns, vibrant accents, and robust outerwear crafted from the finest Indian materials.',
+        coverImage: 'https://images.unsplash.com/photo-1578587018452-892bacefd3f2?w=1200',
+        season: 'Autumn/Winter 2024',
+        tags: ['indian', 'heritage', 'winter'],
+        featured: true,
+        productNames: ['Chunky Himalayan Sweater', 'Kashmiri Handloom Scarf', 'Moleskin Field Jacket', 'Leather Belt with Brass Buckle'],
+    },
+];
+
 const seed = async () => {
     try {
         await connectDB();
         await Product.deleteMany({});
         await User.deleteMany({});
-        logger.info('Cleared existing products and users');
+        await Lookbook.deleteMany({});
+        logger.info('Cleared existing products, users, and lookbooks');
 
         const hashedPassword = await bcrypt.hash('12345K', 12);
         const usersWithHashedPasswords = users.map(user => ({
@@ -167,8 +213,20 @@ const seed = async () => {
         const insertedProducts = await Product.insertMany(products);
         const insertedUsers = await User.insertMany(usersWithHashedPasswords);
 
+        // Build product name → id map
+        const productMap = {};
+        insertedProducts.forEach(p => { productMap[p.name] = p._id; });
+
+        // Create lookbooks with resolved product IDs
+        const lookbooks = lookbookDefs.map(({ productNames, ...rest }) => ({
+            ...rest,
+            products: productNames.map(name => productMap[name]).filter(Boolean),
+        }));
+        const insertedLookbooks = await Lookbook.insertMany(lookbooks);
+
         logger.info(`Seeded ${insertedProducts.length} products successfully`);
         logger.info(`Seeded ${insertedUsers.length} users successfully`);
+        logger.info(`Seeded ${insertedLookbooks.length} lookbooks successfully`);
         process.exit(0);
     } catch (err) {
         logger.error(`Seed error: ${err.message}`);

@@ -4,7 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { Store } from '@ngrx/store';
-import { AsyncPipe, CurrencyPipe } from '@angular/common';
+import { CurrencyPipe } from '@angular/common';
 import { Product } from '../../core/services/product.service';
 import { addToCart } from '../../store/cart/cart.actions';
 import { addToLocalCart } from '../../store/cart/cart.actions';
@@ -13,7 +13,7 @@ import { selectIsLoggedIn } from '../../store/auth/auth.selectors';
 @Component({
   selector: 'app-product-card',
   standalone: true,
-  imports: [RouterLink, AsyncPipe, CurrencyPipe, MatIconModule, MatButtonModule, MatChipsModule],
+  imports: [RouterLink, CurrencyPipe, MatIconModule, MatButtonModule, MatChipsModule],
   template: `
     <div class="card product-card">
       <a [routerLink]="['/product', product._id]" class="card-image-wrap">

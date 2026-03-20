@@ -70,7 +70,7 @@ import { addToCart, addToLocalCart } from '../../store/cart/cart.actions';
             <p class="info-desc">{{ p.description }}</p>
 
             <!-- Colors -->
-            @if (p.colors?.length) {
+            @if (p.colors.length) {
               <div class="option-group">
                 <label class="option-label">Color: <strong>{{ selectedColor || 'Select' }}</strong></label>
                 <div class="color-chips">
@@ -82,7 +82,7 @@ import { addToCart, addToLocalCart } from '../../store/cart/cart.actions';
             }
 
             <!-- Sizes -->
-            @if (p.sizes?.length) {
+            @if (p.sizes.length) {
               <div class="option-group">
                 <label class="option-label">Size: <strong>{{ selectedSize || 'Select' }}</strong></label>
                 <div class="size-chips">

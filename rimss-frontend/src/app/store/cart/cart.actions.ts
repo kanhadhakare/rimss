@@ -21,3 +21,5 @@ export const clearCartSuccess = createAction('[Cart] Clear Cart Success');
 export const addToLocalCart = createAction('[Cart] Add To Local', props<{ product: any; quantity: number; size: string; color: string }>());
 export const removeFromLocalCart = createAction('[Cart] Remove From Local', props<{ itemId: string }>());
 export const updateLocalCartItem = createAction('[Cart] Update Local Item', props<{ itemId: string; quantity: number }>());
+export const clearLocalCart = createAction('[Cart] Clear Local');
+

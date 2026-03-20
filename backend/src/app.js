@@ -17,10 +17,12 @@ app.use((req, _res, next) => {
 
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/products', require('./routes/productRoutes'));
 app.use('/api/cart', require('./routes/cartRoutes'));
 app.use('/api/orders', require('./routes/orderRoutes'));
 app.use('/api/payment', require('./routes/paymentRoutes'));
+app.use('/api/lookbooks', require('./routes/lookbookRoutes'));
 
 // Health check
 app.get('/health', (_req, res) => res.json({ status: 'ok', timestamp: new Date() }));

@@ -10,7 +10,13 @@ router.get('/', async (req, res) => {
         const { search, category, gender, minPrice, maxPrice, color, discount, featured, limit = 20, page = 1 } = req.query;
         const query = {};
 
-        if (search) query.name = { $regex: search, $options: 'i' };
+        if (search) {
+            query.$or = [
+                { name: { $regex: search, $options: 'i' } },
+                { description: { $regex: search, $options: 'i' } },
+                { category: { $regex: search, $options: 'i' } }
+            ];
+        }
         if (category) query.category = category;
         if (gender) query.gender = gender;
         if (color) query.colors = { $in: [color] };

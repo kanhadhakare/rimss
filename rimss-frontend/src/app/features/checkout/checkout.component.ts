@@ -16,6 +16,7 @@ import { Title } from '@angular/platform-browser';
 import { selectCartItems, selectCartTotal } from '../../store/cart/cart.selectors';
 import { clearCart } from '../../store/cart/cart.actions';
 import { OrderService } from '../../core/services/order.service';
+import { UserService } from '../../core/services/user.service';
 
 @Component({
   selector: 'app-checkout',
@@ -140,6 +141,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   placing = false;
   private destroy$ = new Subject<void>();
   private fb = inject(FormBuilder);
+  private userService = inject(UserService);
 
   shippingForm = this.fb.group({
     fullName: ['', Validators.required],
@@ -152,7 +154,27 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   constructor(private orderService: OrderService, private router: Router,
     private snackBar: MatSnackBar, private title: Title) { }
 
-  ngOnInit() { this.title.setTitle('Checkout — YCompany'); }
+  ngOnInit() {
+    this.title.setTitle('Checkout — YCompany');
+    
+    this.userService.getProfile().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (profile) => {
+        if (profile.addresses && profile.addresses.length > 0) {
+          const address = profile.addresses.find(a => a.isHome) || profile.addresses[0];
+          this.shippingForm.patchValue({
+            fullName: address.fullName,
+            address: address.addressLine,
+            city: address.city,
+            postalCode: address.postalCode,
+            country: address.country
+          });
+        } else if (profile.name) {
+          this.shippingForm.patchValue({ fullName: profile.name });
+        }
+      },
+      error: () => {}
+    });
+  }
 
   placeOrder() {
     this.placing = true;

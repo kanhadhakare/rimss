@@ -185,7 +185,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
       } else {
         this.store.dispatch(addToLocalCart({ product: p, quantity: 1, size: this.selectedSize, color: this.selectedColor }));
       }
-      this.snackBar.open('Added to cart!', 'View Cart', { duration: 3000 });
+      this.snackBar.open('Added to cart!', 'View Cart', { duration: 3000, panelClass: ['app-snackbar'] });
     }).unsubscribe();
   }
 

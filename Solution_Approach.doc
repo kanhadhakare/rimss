@@ -1,0 +1,125 @@
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head><title>Solution Approach Document</title>
+<style>
+body { font-family: Calibri, Arial, sans-serif; line-height: 1.5; color: #333; }
+h1, h2 { color: #2c3e50; }
+table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+th, td { border: 1px solid #bdc3c7; padding: 10px; text-align: left; }
+th { background-color: #ecf0f1; }
+pre { background: #f8f9fa; padding: 10px; border-radius: 5px; overflow-x: auto; font-family: Consolas, monospace; }
+</style>
+</head>
+<body>
+<h1>Solution Approach Document: RIMSS E-Commerce Platform</h1>
+
+<h2>1. Technical Diagram (Text Representation)</h2>
+<pre>
+  [User/Browser] &lt;--HTTPS--&gt; [Angular 17+ Frontend Application] 
+                                    |
+                            (REST / HTTPS)
+                                    |
+     [Stripe] &lt;-------------&gt; [Node.js / Express Backend]
+                                    |
+                             (Mongoose / TCP)
+                                    |
+                            [MongoDB Database]
+</pre>
+<p><em>(Diagram represents a Three-Tier Architecture including Angular Frontend, Node/Express Backend, and MongoDB Data Store)</em></p>
+
+<h2>2. Solution Architecture</h2>
+<p>The RIMSS application follows a standard <strong>Three-Tier Architecture</strong> utilizing the MEAN/MERN stack conventions (MongoDB, Express, Angular, Node.js).</p>
+<p><strong>Presentation Tier (Frontend):</strong></p>
+<ul>
+<li>Built with <strong>Angular 17+</strong> as a standalone component application.</li>
+<li>Uses <strong>Angular Material</strong> for a responsive, accessible, and fast UI component library.</li>
+<li><strong>NgRx</strong> is utilized for robust, predictable state management (e.g., Cart state, User Session).</li>
+<li>Component architecture is modularized by features (Catalog, Checkout, Profile, Look Book).</li>
+</ul>
+
+<p><strong>Application Tier (Backend):</strong></p>
+<ul>
+<li>A <strong>Node.js</strong> runtime using the <strong>Express.js</strong> framework provides RESTful APIs to the frontend.</li>
+<li>Controllers handle business logic such as cart validations, order processing, and user authentication.</li>
+<li><strong>JWT (JSON Web Tokens)</strong> are used to authenticate and authorize API requests securely.</li>
+</ul>
+
+<p><strong>Data Tier (Database):</strong></p>
+<ul>
+<li><strong>MongoDB</strong> is used as the primary NoSQL document store, providing flexibility for product catalog structures (categories, variants, look books).</li>
+<li><strong>Mongoose ODM</strong> is used to enforce schema validation and provide a straightforward mapping between business objects and the database.</li>
+</ul>
+
+<p><strong>Integrations:</strong></p>
+<ul>
+<li><strong>Stripe</strong> is used for secure payment processing during the checkout flow via Stripe Payment Intents, allowing PCI-compliant transactions.</li>
+</ul>
+
+<h2>3. Non-Functional Requirements Coverage</h2>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Implementation Strategy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Security</strong></td>
+<td>- <strong>Authentication:</strong> JWT for protecting private routes and user data.<br>- <strong>Transport:</strong> All data (frontend to backend) must be served over HTTPS/TLS.<br>- <strong>Data Protection:</strong> Passwords securely hashed (e.g., bcrypt) before saving to the database. Stripe handles raw credit card data, offloading PCI compliance.</td>
+</tr>
+<tr>
+<td><strong>Scalability</strong></td>
+<td>- <strong>Horizontal Scaling:</strong> The backend Express application is stateless (session state held in JWT token and DB), allowing it to be easily scaled horizontally via load balancers (e.g., Kubernetes or AWS ECS/Fargate).<br>- <strong>Database Scaling:</strong> MongoDB provides native sharding for when data size or throughput increases.</td>
+</tr>
+<tr>
+<td><strong>Reliability</strong></td>
+<td>- Comprehensive error handling on the backend with appropriate HTTP status codes.<br>- On the frontend, Interceptors catch global errors and display user-friendly snackbar messages.</td>
+</tr>
+<tr>
+<td><strong>Maintainability</strong></td>
+<td>- Adherence to strict TypeScript interfaces and generic types across the stack.<br>- Feature-based folder structure in Angular, improving module decoupling.</td>
+</tr>
+<tr>
+<td><strong>Accessibility</strong></td>
+<td>- Angular Material components natively comply with ARIA (Accessible Rich Internet Applications) standards.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>4. Performance</h2>
+<ul>
+<li><strong>Lazy Loading:</strong> The Angular router uses lazy loading for feature modules (e.g., separating the Catalog from User Profile and Checkout). This reduces the initial JavaScript bundle size, speeding up the Time-to-Interactive (TTI).</li>
+<li><strong>State Management Caching:</strong> Using NgRx allows the application to cache data locally. For instance, cart items and user profiles do not need constant refetching.</li>
+<li><strong>Image Optimization:</strong> Product images and Look Book galleries should be served via a CDN (Content Delivery Network). Responsive images (<code>srcset</code>) will be utilized to serve appropriate sizes based on the user's device.</li>
+<li><strong>Database Indexing:</strong> Frequently queried fields in MongoDB (such as <code>productId</code>, <code>SKU</code>, and user <code>email</code>) will be indexed for fast read operations.</li>
+<li><strong>API Response Times:</strong> The backend is designed to return payload sizes restricted to necessary fields, avoiding over-fetching.</li>
+</ul>
+
+<h2>5. Assumptions &amp; Scope</h2>
+<p><strong>In Scope:</strong></p>
+<ul>
+<li>Full user journey from browsing the product catalog to completing a checkout.</li>
+<li>User profile management, including an address book (multiple shipping addresses).</li>
+<li>Integration with a mocked or test-mode payment gateway (Stripe).</li>
+<li>A "Look Book" feature for curated collections.</li>
+<li>Administrator capabilities (basic seeding of product data).</li>
+<li>Core REST API development and MongoDB schema definitions.</li>
+</ul>
+
+<p><strong>Out of Scope:</strong></p>
+<ul>
+<li>Live integration with a real payment gateway or physical fulfillment/shipping providers (e.g., FedEx, UPS).</li>
+<li>Complex inventory management (e.g., warehouse bin tracking).</li>
+<li>Real-time chat support or AI-based product recommendations.</li>
+<li>Multi-tenant architecture (this is a single storefront site).</li>
+</ul>
+
+<p><strong>Assumptions:</strong></p>
+<ul>
+<li>The target audience primarily uses modern web browsers (Chrome, Edge, Firefox, Safari); legacy browsers (e.g., IE11) are not supported.</li>
+<li>The system expects moderate traffic initially but is architected to be cloud-ready (AWS/GCP/Azure) for future scaling.</li>
+<li>Product images will be hosted and provided via external URLs in the current implementation iteration.</li>
+</ul>
+
+</body>
+</html>

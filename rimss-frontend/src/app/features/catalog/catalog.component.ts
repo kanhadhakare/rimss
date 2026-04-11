@@ -146,6 +146,10 @@ export class CatalogComponent implements OnInit, OnDestroy {
     this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(p => {
       if (p['category']) this.filters.category = p['category'];
       if (p['featured']) this.filters.featured = true;
+      if (p['search']) {
+        this.filters.search = p['search'];
+        setTimeout(() => this.searchChange$.next(p['search']), 0);
+      }
       this.applyFilters();
     });
     this.searchChange$.pipe(debounceTime(350), distinctUntilChanged(), takeUntil(this.destroy$))

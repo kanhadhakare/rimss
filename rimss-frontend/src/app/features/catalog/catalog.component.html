@@ -1,0 +1,73 @@
+<div class="catalog-layout">
+    <!-- Sidebar Filters -->
+    <aside class="sidebar">
+        <h2 class="sidebar-title">Filter</h2>
+
+        <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Search</mat-label>
+            <mat-icon matPrefix>search</mat-icon>
+            <input matInput [(ngModel)]="filters.search" (ngModelChange)="onSearchChange($event)"
+                placeholder="Search products..." />
+        </mat-form-field>
+
+        <div class="filter-group">
+            <label class="filter-label">Category</label>
+            <div class="chip-group">
+                @for (c of categories; track c) {
+                <span class="filter-chip" [class.active]="filters.category === c" (click)="setCategory(c)">{{ c
+                    }}</span>
+                }
+            </div>
+        </div>
+
+        <div class="filter-group">
+            <label class="filter-label">Gender</label>
+            <div class="chip-group">
+                @for (g of genders; track g) {
+                <span class="filter-chip" [class.active]="filters.gender === g" (click)="setGender(g)">{{ g }}</span>
+                }
+            </div>
+        </div>
+
+        <div class="filter-group">
+            <label class="filter-label">Max Price: ₹{{ filters.maxPrice || 5000 }}</label>
+            <input type="range" min="500" max="5000" step="500" [(ngModel)]="filters.maxPrice" (change)="applyFilters()"
+                class="price-slider" />
+        </div>
+
+        <div class="filter-group">
+            <label class="filter-check">
+                <input type="checkbox" [(ngModel)]="filters.discount" (change)="applyFilters()" />
+                <span>On Sale Only</span>
+            </label>
+        </div>
+
+        <button class="btn-outline" (click)="resetFilters()">Reset Filters</button>
+    </aside>
+
+    <!-- Product Grid -->
+    <main class="catalog-main">
+        <div class="catalog-header">
+            <h1 class="catalog-title">Collections</h1>
+            <span class="catalog-count">{{ (total$ | async) || 0 }} products</span>
+        </div>
+
+        @if (loading$ | async) {
+        <div class="loading-overlay">
+            <div class="spinner"></div>
+        </div>
+        } @else if ((products$ | async)?.length === 0) {
+        <div class="empty-state">
+            <mat-icon>search_off</mat-icon>
+            <p>No products match your filters.</p>
+            <button class="btn-primary" (click)="resetFilters()">Clear Filters</button>
+        </div>
+        } @else {
+        <div class="products-grid">
+            @for (p of products$ | async; track p._id) {
+            <app-product-card [product]="p"></app-product-card>
+            }
+        </div>
+        }
+    </main>
+</div>

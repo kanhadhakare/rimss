@@ -1,0 +1,125 @@
+<!-- Hero -->
+<section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content container">
+        <span class="hero-label">New Season 2024</span>
+        <h1 class="hero-title">Timeless Luxury.<br>Modern Heritage.</h1>
+        <p class="hero-sub">Discover the finest Indian ethical fashion — reimagined for the contemporary wardrobe.</p>
+        <div class="hero-actions">
+            <a routerLink="/products" class="btn-accent">Shop Collection</a>
+            <a routerLink="/products?featured=true" class="btn-outline">View Lookbook</a>
+        </div>
+    </div>
+</section>
+
+<!-- Offer Banner -->
+<section class="offer-banner">
+    <div class="container offer-inner">
+        <mat-icon>local_offer</mat-icon>
+        <span>Free shipping on all orders over ₹2000 · Use code <strong>HERITAGE20</strong> for 20% off your first
+            order</span>
+    </div>
+</section>
+
+<!-- Featured Products Slideshow -->
+<section class="section featured-section">
+    <div class="container">
+        <h2 class="section-title">Featured Pieces</h2>
+        <p class="section-subtitle">Handpicked selections from our latest collection</p>
+        <div class="divider"></div>
+
+        @if (loading$ | async) {
+        <div class="loading-overlay">
+            <div class="spinner"></div>
+        </div>
+        } @else if ((products$ | async)?.length) {
+        @if (products$ | async; as featuredProducts) {
+        {{ initSlider(featuredProducts) }}
+        <div class="slideshow-wrapper" (mouseenter)="pauseSlider()" (mouseleave)="resumeSlider()">
+
+            <!-- Slides -->
+            <div class="slides-track">
+                @for (p of featuredProducts; track p._id; let i = $index) {
+                <div class="slide" [class.active]="i === currentSlide" [class.exit]="i === prevSlide">
+                    <div class="slide-inner">
+                        <div class="slide-image">
+                            <img [src]="p.images[0]" [alt]="p.name" />
+                            @if (p.discountPct > 0) {
+                            <span class="slide-badge">{{ p.discountPct }}% OFF</span>
+                            }
+                        </div>
+                        <div class="slide-content">
+                            <span class="slide-category">{{ p.category }}</span>
+                            <h3 class="slide-name">{{ p.name }}</h3>
+                            <p class="slide-desc">{{ p.description | slice:0:120 }}...</p>
+                            <div class="slide-price">
+                                <span class="price-sale">&#8377;{{ p.salePrice || p.price }}</span>
+                                @if (p.discountPct > 0) {
+                                <span class="price-original">&#8377;{{ p.price }}</span>
+                                }
+                            </div>
+                            <a [routerLink]="['/product', p._id]" class="btn-accent slide-cta">View Product</a>
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+
+            <!-- Prev / Next Controls -->
+            <button class="slide-btn slide-prev" (click)="prevSlideClick(featuredProducts.length)"
+                aria-label="Previous">
+                <mat-icon>chevron_left</mat-icon>
+            </button>
+            <button class="slide-btn slide-next" (click)="nextSlideClick(featuredProducts.length)" aria-label="Next">
+                <mat-icon>chevron_right</mat-icon>
+            </button>
+
+            <!-- Dot Indicators -->
+            <div class="slide-dots">
+                @for (p of featuredProducts; track p._id; let i = $index) {
+                <button class="dot" [class.active]="i === currentSlide" (click)="goToSlide(i)"></button>
+                }
+            </div>
+
+            <!-- Progress bar -->
+            <div class="progress-bar" [class.paused]="paused"></div>
+        </div>
+        }
+        }
+
+        <div class="text-center mt-40">
+            <a routerLink="/products" class="btn-primary">View All Collections</a>
+        </div>
+    </div>
+</section>
+
+<!-- Categories -->
+<section class="section categories-section">
+    <div class="container">
+        <h2 class="section-title">Shop by Category</h2>
+        <div class="divider"></div>
+        <div class="categories-grid">
+            @for (cat of categories; track cat.key) {
+            <a [routerLink]="['/products']" [queryParams]="{category: cat.key}" class="cat-card card">
+                <div class="cat-img-wrap">
+                    <img [src]="cat.image" [alt]="cat.label" loading="lazy" />
+                </div>
+                <div class="cat-label">{{ cat.label }}</div>
+            </a>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- Value Props -->
+<section class="section values-section">
+    <div class="container values-grid">
+        @for (v of values; track v.icon) {
+        <div class="value-card">
+            <mat-icon class="value-icon">{{ v.icon }}</mat-icon>
+            <h3>{{ v.title }}</h3>
+            <p>{{ v.desc }}</p>
+        </div>
+        }
+    </div>
+</section>

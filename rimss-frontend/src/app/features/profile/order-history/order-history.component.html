@@ -1,0 +1,54 @@
+<div class="orders-container">
+    <h2 class="sub-title">Past Orders</h2>
+
+    @if (!orders || orders.length === 0) {
+    <div class="empty-state">
+        <p>You haven't placed any orders yet.</p>
+    </div>
+    } @else {
+    <div class="order-list">
+        @for (order of orders; track order._id) {
+        <mat-card class="order-card">
+            <mat-card-header>
+                <div class="order-header-info">
+                    <div class="info-block">
+                        <span class="label">Order Placed</span>
+                        <span class="val">{{ order.createdAt | date:'mediumDate' }}</span>
+                    </div>
+                    <div class="info-block">
+                        <span class="label">Total</span>
+                        <span class="val">{{ order.totalAmount | currency:'INR' }}</span>
+                    </div>
+                    <div class="info-block">
+                        <span class="label">Order #</span>
+                        <span class="val order-id">{{ order._id }}</span>
+                    </div>
+                    <div class="info-block status-block">
+                        <span class="label">Status</span>
+                        <span class="status-badge" [class]="'status-' + order.status">
+                            {{ getStatusLabel(order.status) }}
+                        </span>
+                    </div>
+                </div>
+            </mat-card-header>
+            <mat-divider></mat-divider>
+            <mat-card-content class="order-items">
+                @for (item of order.items; track item.product) {
+                <div class="item-row">
+                    <div class="item-details">
+                        <strong>{{ item.name }}</strong>
+                        <span class="item-meta">
+                            Qty: {{ item.quantity }}
+                            @if (item.color) { | Color: {{ item.color }} }
+                            @if (item.size) { | Size: {{ item.size }} }
+                        </span>
+                    </div>
+                    <span class="item-price">{{ item.price | currency:'INR' }}</span>
+                </div>
+                }
+            </mat-card-content>
+        </mat-card>
+        }
+    </div>
+    }
+</div>

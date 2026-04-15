@@ -1,0 +1,29 @@
+<div class="card product-card">
+    <a [routerLink]="['/product', product._id]" class="card-image-wrap">
+        <img [src]="product.images[0]" [alt]="product.name" loading="lazy" class="card-img" />
+        @if (product.discountPct > 0) {
+        <span class="badge badge-discount discount-chip">−{{ product.discountPct }}%</span>
+        }
+    </a>
+    <div class="card-body">
+        <span class="card-category">{{ product.category }}</span>
+        <a [routerLink]="['/product', product._id]" class="card-title">{{ product.name }}</a>
+        <div class="card-pricing">
+            @if (product.discountPct > 0) {
+            <span class="price-sale">{{ product.salePrice | currency:'INR' }}</span>
+            <span class="price-original">{{ product.price | currency:'INR' }}</span>
+            } @else {
+            <span class="price-sale">{{ product.price | currency:'INR' }}</span>
+            }
+        </div>
+        <div class="card-footer">
+            <div class="rating">
+                <mat-icon class="star">star</mat-icon>
+                <span>{{ product.rating }} ({{ product.reviewCount }})</span>
+            </div>
+            <button mat-mini-fab color="primary" class="add-btn" (click)="onAddToCart($event)" aria-label="Add to cart">
+                <mat-icon>add_shopping_cart</mat-icon>
+            </button>
+        </div>
+    </div>
+</div>

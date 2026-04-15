@@ -14,53 +14,8 @@ import { UserService } from '../../../core/services/user.service';
     selector: 'app-profile-info',
     standalone: true,
     imports: [ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule],
-    template: `
-    @if (profile) {
-    <div class="profile-info-container">
-      <h2 class="sub-title">Personal Details</h2>
-
-      <mat-card class="info-card">
-        <mat-card-content>
-          <form [formGroup]="form" (ngSubmit)="updateProfile()">
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Full Name</mat-label>
-              <input matInput formControlName="name" />
-            </mat-form-field>
-            
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Email Address</mat-label>
-              <input matInput [value]="profile.email" disabled />
-              <mat-hint>Email cannot be changed</mat-hint>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="w-full mt-4">
-              <mat-label>New Password (Optional)</mat-label>
-              <input matInput [type]="showPwd ? 'text' : 'password'" formControlName="password" />
-              <button mat-icon-button matSuffix type="button" (click)="showPwd = !showPwd">
-                 <mat-icon>{{ showPwd ? 'visibility_off' : 'visibility' }}</mat-icon>
-              </button>
-            </mat-form-field>
-
-            <div class="form-actions">
-              <button type="submit" class="btn-primary" [disabled]="form.invalid || !form.dirty || updating">
-                @if (updating) { <mat-spinner strokeWidth="2" diameter="20"></mat-spinner> } 
-                @else { Save Changes }
-              </button>
-            </div>
-          </form>
-        </mat-card-content>
-      </mat-card>
-    </div>
-    }
-  `,
-    styles: [`
-    .sub-title { font-family: var(--font-display); font-size: 1.5rem; color: var(--color-primary); margin-bottom: 24px; }
-    .profile-info-container { max-width: 600px; }
-    .info-card { padding: 32px 24px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border: 1px solid var(--color-border); }
-    .w-full { width: 100%; margin-bottom: 12px; }
-    .mt-4 { margin-top: 16px; }
-    .form-actions { margin-top: 24px; display: flex; justify-content: flex-end; }
-  `]
+    templateUrl: './profile-info.component.html',
+    styleUrls: ['./profile-info.component.scss']
 })
 export class ProfileInfoComponent {
     @Input() set profile(val: UserProfile) {

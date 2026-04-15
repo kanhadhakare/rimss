@@ -1,0 +1,96 @@
+@if (loading$ | async) {
+<div class="loading-overlay" style="min-height:80vh">
+    <div class="spinner"></div>
+</div>
+} @else if (product$ | async; as p) {
+<div class="detail-wrap container">
+    <!-- Breadcrumbs -->
+    <nav class="breadcrumb">
+        <a routerLink="/">Home</a> /
+        <a routerLink="/products">Collections</a> /
+        <span>{{ p.name }}</span>
+    </nav>
+
+    <div class="detail-grid">
+        <!-- Images -->
+        <div class="gallery">
+            <div class="main-img-wrap">
+                <img [src]="p.images[activeImg]" [alt]="p.name" class="main-img" />
+                @if (p.discountPct > 0) {
+                <span class="badge badge-discount">−{{ p.discountPct }}%</span>
+                }
+            </div>
+            <div class="thumbnails">
+                @for (img of p.images; track img; let i = $index) {
+                <img [src]="img" [alt]="p.name + ' ' + i" (click)="activeImg = i" [class.active-thumb]="activeImg === i"
+                    class="thumb" />
+                }
+            </div>
+        </div>
+
+        <!-- Info -->
+        <div class="info-panel">
+            <span class="info-category">{{ p.category }} · {{ p.gender }}</span>
+            <h1 class="info-name">{{ p.name }}</h1>
+            <div class="info-rating">
+                <mat-icon class="star">star</mat-icon>
+                <span>{{ p.rating }} ({{ p.reviewCount }} reviews)</span>
+            </div>
+            <div class="info-pricing">
+                @if (p.discountPct > 0) {
+                <span class="price-sale">{{ p.salePrice | currency:'INR' }}</span>
+                <span class="price-original">{{ p.price | currency:'INR' }}</span>
+                <span class="price-saved">Save {{ p.price - p.salePrice | currency:'INR' }}</span>
+                } @else {
+                <span class="price-sale">{{ p.price | currency:'INR' }}</span>
+                }
+            </div>
+            <p class="info-desc">{{ p.description }}</p>
+
+            <!-- Colors -->
+            @if (p.colors.length) {
+            <div class="option-group">
+                <label class="option-label">Color: <strong>{{ selectedColor || 'Select' }}</strong></label>
+                <div class="color-chips">
+                    @for (c of p.colors; track c) {
+                    <span class="color-chip" [class.active]="selectedColor === c" (click)="selectedColor = c">{{ c
+                        }}</span>
+                    }
+                </div>
+            </div>
+            }
+
+            <!-- Sizes -->
+            @if (p.sizes.length) {
+            <div class="option-group">
+                <label class="option-label">Size: <strong>{{ selectedSize || 'Select' }}</strong></label>
+                <div class="size-chips">
+                    @for (s of p.sizes; track s) {
+                    <span class="size-chip" [class.active]="selectedSize === s" (click)="selectedSize = s">{{ s
+                        }}</span>
+                    }
+                </div>
+            </div>
+            }
+
+            <!-- Add to Cart -->
+            <button class="btn-primary add-cart-btn" (click)="addToCart(p)" [disabled]="p.stock === 0">
+                <mat-icon>shopping_bag</mat-icon>
+                {{ p.stock > 0 ? 'Add to Cart' : 'Out of Stock' }}
+            </button>
+
+            <div class="stock-info">
+                @if (p.stock > 0 && p.stock < 10) { <span class="low-stock">⚠ Only {{ p.stock }} left in stock</span>
+                    } @else if (p.stock > 0) {
+                    <span class="in-stock">✓ In Stock</span>
+                    }
+            </div>
+
+            <!-- Meta -->
+            <span>Free shipping over ₹2000</span> ·
+            <span>30-day returns</span> ·
+            <span>Authenticity guaranteed</span>
+        </div>
+    </div>
+</div>
+}

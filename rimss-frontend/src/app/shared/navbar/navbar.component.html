@@ -1,0 +1,65 @@
+<mat-toolbar class="navbar">
+    <div class="nav-inner container">
+        <a routerLink="/" class="brand">
+            <span class="brand-y">Y</span><span class="brand-co">Company</span>
+        </a>
+
+        <nav class="nav-links">
+            <a mat-button routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Home</a>
+            <a mat-button routerLink="/products" routerLinkActive="active">Collections</a>
+        </nav>
+
+        <div class="search-container">
+            <form class="nav-search" (ngSubmit)="onSearch()">
+                <mat-icon>search</mat-icon>
+                <input type="text" name="search" [(ngModel)]="searchQuery" (ngModelChange)="onSearchInput($event)"
+                    (focus)="showDropdown = true" (blur)="onBlur()" placeholder="Search..." autocomplete="off" />
+            </form>
+
+            @if (showDropdown && (searchResults$ | async); as results) {
+            <div class="search-dropdown" (mousedown)="$event.preventDefault()">
+                @if (results.length > 0) {
+                @for (prod of results; track prod._id) {
+                <div class="search-item" (click)="goToProduct(prod._id)">
+                    <img [src]="prod.images[0]" alt="">
+                    <div class="item-info">
+                        <div class="item-name">{{ prod.name }}</div>
+                        <div class="item-price">₹{{ prod.salePrice || prod.price }}</div>
+                    </div>
+                </div>
+                }
+                } @else if (searchQuery.length > 2) {
+                <div class="search-empty">No products found</div>
+                }
+            </div>
+            }
+        </div>
+
+
+        <div class="nav-actions">
+            <a mat-icon-button routerLink="/cart" aria-label="Shopping Cart" [matBadge]="(cartCount$ | async) || 0"
+                matBadgeColor="warn" [matBadgeHidden]="(cartCount$ | async) === 0">
+                <mat-icon>shopping_bag</mat-icon>
+            </a>
+
+            @if (isLoggedIn$ | async) {
+            <button mat-icon-button [matMenuTriggerFor]="userMenu">
+                <mat-icon>account_circle</mat-icon>
+            </button>
+            <mat-menu #userMenu="matMenu">
+                <div class="menu-user-name" mat-menu-item disabled>
+                    {{ (user$ | async)?.name }}
+                </div>
+                <a mat-menu-item routerLink="/profile">
+                    <mat-icon>person</mat-icon> My Profile
+                </a>
+                <button mat-menu-item (click)="onLogout()">
+                    <mat-icon>logout</mat-icon> Sign Out
+                </button>
+            </mat-menu>
+            } @else {
+            <a mat-button routerLink="/auth/login" class="btn-nav-login">Sign In</a>
+            }
+        </div>
+    </div>
+</mat-toolbar>

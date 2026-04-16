@@ -5,7 +5,7 @@ const User = require('../models/User');
 const logger = require('../config/logger');
 
 const signToken = (id) =>
-    jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
+    jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
 // POST /api/auth/register
 router.post('/register', async (req, res) => {

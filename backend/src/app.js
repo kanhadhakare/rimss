@@ -4,18 +4,24 @@ const logger = require('./config/logger');
 
 const app = express();
 
-// CORS configuration
+// CORS configuration — normalize CLIENT_URL (strip trailing slash)
+const clientUrl = process.env.CLIENT_URL ? process.env.CLIENT_URL.replace(/\/$/, '') : null;
+
 const allowedOrigins = [
-    'http://localhost:4200',      // Local development
-    'http://localhost:3000',      // Alternative local port
-    process.env.CLIENT_URL,       // Environment variable (production Vercel URL)
+    'http://localhost:4200',        // Local Angular dev server
+    'http://localhost:3000',        // Alternative local port
+    'https://rimss.vercel.app',     // Production Vercel URL (explicit fallback)
+    clientUrl,                      // Production URL from env (normalized)
     process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null  // Vercel preview URLs
 ].filter(Boolean);
 
 // Middleware
 app.use(cors({ 
     origin: allowedOrigins, 
-    credentials: true 
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    optionsSuccessStatus: 200
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

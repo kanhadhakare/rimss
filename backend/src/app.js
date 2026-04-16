@@ -6,7 +6,8 @@ const app = express();
 
 // CORS configuration
 const allowedOrigins = [
-    // Alternative local port
+    'http://localhost:4200',      // Local development
+    'http://localhost:3000',      // Alternative local port
     process.env.CLIENT_URL,       // Environment variable (production Vercel URL)
     process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null  // Vercel preview URLs
 ].filter(Boolean);

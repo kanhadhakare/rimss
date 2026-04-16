@@ -4,8 +4,18 @@ const logger = require('./config/logger');
 
 const app = express();
 
+// CORS configuration
+const allowedOrigins = [
+    // Alternative local port
+    process.env.CLIENT_URL,       // Environment variable (production Vercel URL)
+    process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null  // Vercel preview URLs
+].filter(Boolean);
+
 // Middleware
-app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:4200', credentials: true }));
+app.use(cors({ 
+    origin: allowedOrigins, 
+    credentials: true 
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
